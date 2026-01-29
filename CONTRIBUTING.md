@@ -148,7 +148,7 @@ pub fn parent(mesh: MeshCode) -> Option<MeshCode> {
 
 ### 必要なツール
 
-- Rust 1.75以上
+- Rust 1.81以上
 - cargo
 - clippy
 - rustfmt
