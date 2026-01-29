@@ -49,6 +49,7 @@
 - 階層操作（親子メッシュの取得）
 - 隣接メッシュの計算（8方向）
 - 空間範囲検索（境界ボックス）
+- **半径検索（Haversine距離計算）**
 - メッシュの境界・中心座標計算
 
 ## メッシュレベル
@@ -200,6 +201,24 @@ let bbox = BoundingBox::new(sw, ne);
 for mesh in mesh_codes_in_bbox(bbox, MeshLevel::Third) {
     println!("{}", mesh);
 }
+
+// 座標から半径内のメッシュコードをイテレータで取得
+let center = Coordinate::new(35.6812, 139.7671).unwrap();
+for mesh in mesh_codes_in_radius(center, 1000.0, MeshLevel::Third) {
+    println!("{}", mesh);
+}
+
+// メッシュコードから半径内のメッシュコードをイテレータで取得
+let center_mesh = MeshCode::from_str("53394611").unwrap();
+for mesh in mesh_codes_in_radius_from_mesh(center_mesh, 1000.0) {
+    println!("{}", mesh);
+}
+
+// 2点間の距離を計算（Haversine公式）
+let coord1 = Coordinate::new(35.6812, 139.7671).unwrap();
+let coord2 = Coordinate::new(35.6895, 139.6917).unwrap();
+let distance = haversine_distance(coord1, coord2);
+println!("距離: {}m", distance);
 ```
 
 ### 境界・包含判定
@@ -242,6 +261,13 @@ for neighbor in all_neighbors {
 // 親メッシュと子メッシュ
 let parent_mesh = parent(mesh).unwrap();
 let children_list = children(parent_mesh);
+
+// 半径検索（例：1km以内のメッシュを取得）
+for nearby_mesh in mesh_codes_in_radius(coord, 1000.0, MeshLevel::Third) {
+    let center = mesh_to_center(nearby_mesh);
+    let distance = haversine_distance(coord, center);
+    println!("メッシュ: {}, 距離: {:.0}m", nearby_mesh, distance);
+}
 ```
 
 ## インストール
@@ -250,21 +276,21 @@ let children_list = children(parent_mesh);
 
 ```toml
 [dependencies]
-jismeshcode = "0.1"
+jismeshcode = "0.2"
 ```
 
 `no_std`環境の場合：
 
 ```toml
 [dependencies]
-jismeshcode = { version = "0.1", default-features = false }
+jismeshcode = { version = "0.2", default-features = false }
 ```
 
 `serde`対応が必要な場合：
 
 ```toml
 [dependencies]
-jismeshcode = { version = "0.1", features = ["serde"] }
+jismeshcode = { version = "0.2", features = ["serde"] }
 ```
 
 ## サンプルコード
