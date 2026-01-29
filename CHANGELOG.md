@@ -26,5 +26,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `std` (default): 標準ライブラリを使用
 - `serde`: Serdeによるシリアライゼーション対応
 
-[Unreleased]: https://github.com/uiuifree/jismeshcode/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/uiuifree/jismeshcode/releases/tag/v0.1.0
+[Unreleased]: https://github.com/uiuifree/rust-jismeshcode/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/uiuifree/rust-jismeshcode/releases/tag/v0.1.0

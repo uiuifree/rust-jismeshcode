@@ -17,7 +17,7 @@ jismeshcodeへの貢献に興味を持っていただきありがとうござい
 
 ### バグ報告
 
-バグを見つけた場合は、[Issues](https://github.com/uiuifree/jismeshcode/issues)で報告してください。
+バグを見つけた場合は、[Issues](https://github.com/uiuifree/rust-jismeshcode/issues)で報告してください。
 
 以下の情報を含めると、より早く問題を解決できます：
 
@@ -30,7 +30,7 @@ jismeshcodeへの貢献に興味を持っていただきありがとうござい
 
 ### 機能リクエスト
 
-新機能のアイデアがある場合は、[Issues](https://github.com/uiuifree/jismeshcode/issues)で提案してください。
+新機能のアイデアがある場合は、[Issues](https://github.com/uiuifree/rust-jismeshcode/issues)で提案してください。
 
 以下の情報を含めると有用です：
 
@@ -157,7 +157,7 @@ pub fn parent(mesh: MeshCode) -> Option<MeshCode> {
 
 ```bash
 # リポジトリのクローン
-git clone https://github.com/uiuifree/jismeshcode.git
+git clone https://github.com/uiuifree/rust-jismeshcode.git
 cd jismeshcode
 
 # 依存関係のインストール
@@ -199,8 +199,8 @@ cargo build --release
 
 ## 質問や議論
 
-- バグや機能リクエストは[Issues](https://github.com/uiuifree/jismeshcode/issues)で
-- 一般的な質問やアイデアは[Discussions](https://github.com/uiuifree/jismeshcode/discussions)で
+- バグや機能リクエストは[Issues](https://github.com/uiuifree/rust-jismeshcode/issues)で
+- 一般的な質問やアイデアは[Discussions](https://github.com/uiuifree/rust-jismeshcode/discussions)で
 
 ## ライセンス
 

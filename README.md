@@ -2,8 +2,8 @@
 
 [![Crates.io](https://img.shields.io/crates/v/jismeshcode.svg)](https://crates.io/crates/jismeshcode)
 [![Documentation](https://docs.rs/jismeshcode/badge.svg)](https://docs.rs/jismeshcode)
-[![CI](https://github.com/uiuifree/jismeshcode/workflows/CI/badge.svg)](https://github.com/uiuifree/jismeshcode/actions)
-[![License](https://img.shields.io/crates/l/jismeshcode.svg)](https://github.com/uiuifree/jismeshcode#license)
+[![CI](https://github.com/uiuifree/rust-jismeshcode/workflows/CI/badge.svg)](https://github.com/uiuifree/rust-jismeshcode/actions)
+[![License](https://img.shields.io/crates/l/jismeshcode.svg)](https://github.com/uiuifree/rust-jismeshcode#license)
 
 日本標準地域メッシュコード（JIS X 0410）を扱う包括的なRustライブラリです。
 

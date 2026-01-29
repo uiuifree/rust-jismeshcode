@@ -35,9 +35,9 @@
   ```markdown
   [![Crates.io](https://img.shields.io/crates/v/jismeshcode.svg)](https://crates.io/crates/jismeshcode)
   [![Documentation](https://docs.rs/jismeshcode/badge.svg)](https://docs.rs/jismeshcode)
-  [![CI](https://github.com/uiuifree/jismeshcode/workflows/CI/badge.svg)](https://github.com/uiuifree/jismeshcode/actions)
+  [![CI](https://github.com/uiuifree/rust-jismeshcode/workflows/CI/badge.svg)](https://github.com/uiuifree/rust-jismeshcode/actions)
   [![codecov](https://codecov.io/gh/uiuifree/jismeshcode/branch/main/graph/badge.svg)](https://codecov.io/gh/uiuifree/jismeshcode)
-  [![License](https://img.shields.io/crates/l/jismeshcode.svg)](https://github.com/uiuifree/jismeshcode#license)
+  [![License](https://img.shields.io/crates/l/jismeshcode.svg)](https://github.com/uiuifree/rust-jismeshcode#license)
   ```
 
 ## 2. ドキュメントの充実
