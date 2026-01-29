@@ -46,5 +46,9 @@ pub mod prelude;
 pub use convert::{coord_to_mesh, mesh_to_bounds, mesh_to_center};
 pub use error::{CoordinateError, MeshCodeError, Result};
 pub use operations::{bounds, center, children, contains, neighbor, neighbors, parent, to_level};
-pub use spatial::{mesh_codes_in_bbox, MeshCodeIterator};
+pub use spatial::{
+    mesh_codes_in_bbox, mesh_codes_in_radius, mesh_codes_in_radius_from_mesh, MeshCodeIterator,
+    MeshCodeRadiusIterator,
+};
 pub use types::{BoundingBox, Coordinate, Direction, MeshCode, MeshLevel};
+pub use utils::distance::haversine_distance;
