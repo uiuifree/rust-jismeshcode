@@ -237,8 +237,16 @@ fn test_large_number_of_meshes() {
     // 経度方向: 1度 / (45秒/3600) ≈ 80個
     // 合計: 約 120 x 80 = 9600個
     let count = mesh_codes_in_bbox(bbox, MeshLevel::Third).count();
-    assert!(count > 5000, "Expected more than 5000 meshes, got {}", count);
-    assert!(count < 15000, "Expected less than 15000 meshes, got {}", count);
+    assert!(
+        count > 5000,
+        "Expected more than 5000 meshes, got {}",
+        count
+    );
+    assert!(
+        count < 15000,
+        "Expected less than 15000 meshes, got {}",
+        count
+    );
 }
 
 #[test]

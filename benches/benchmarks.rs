@@ -22,5 +22,10 @@ fn bench_neighbors(c: &mut Criterion) {
     });
 }
 
-criterion_group!(benches, bench_coord_to_mesh, bench_mesh_to_bounds, bench_neighbors);
+criterion_group!(
+    benches,
+    bench_coord_to_mesh,
+    bench_mesh_to_bounds,
+    bench_neighbors
+);
 criterion_main!(benches);

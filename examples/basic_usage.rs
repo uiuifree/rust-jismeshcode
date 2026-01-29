@@ -37,8 +37,16 @@ fn main() {
     // ========================================
     println!("\n2. メッシュの境界を取得:");
     let bounds = mesh_to_bounds(mesh_third);
-    println!("   南西端: ({:.6}, {:.6})", bounds.min_lat(), bounds.min_lon());
-    println!("   北東端: ({:.6}, {:.6})", bounds.max_lat(), bounds.max_lon());
+    println!(
+        "   南西端: ({:.6}, {:.6})",
+        bounds.min_lat(),
+        bounds.min_lon()
+    );
+    println!(
+        "   北東端: ({:.6}, {:.6})",
+        bounds.max_lat(),
+        bounds.max_lon()
+    );
 
     // ========================================
     // 3. メッシュの中心座標を取得
@@ -70,7 +78,11 @@ fn main() {
     let mesh_second = MeshCode::from_str("533946").unwrap();
     let children_list = children(mesh_second);
     // 2次メッシュは100個の3次メッシュに分割されます
-    println!("   {} の子メッシュ数: {} 個", mesh_second, children_list.len());
+    println!(
+        "   {} の子メッシュ数: {} 個",
+        mesh_second,
+        children_list.len()
+    );
 
     // ========================================
     // 7. 文字列からメッシュコードをパース

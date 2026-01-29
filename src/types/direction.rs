@@ -63,7 +63,7 @@ impl fmt::Display for Direction {
             Direction::West => "West",
             Direction::NorthWest => "NorthWest",
         };
-        write!(f, "{}", s)
+        write!(f, "{s}")
     }
 }
 

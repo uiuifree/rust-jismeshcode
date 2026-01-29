@@ -255,7 +255,11 @@ fn test_fourth_quarter_mesh_range() {
             let code_str = mesh.as_string();
             let last_two = &code_str[code_str.len() - 2..];
             let num: u32 = last_two.parse().unwrap();
-            assert!(num >= 1 && num <= 16, "Invalid fourth quarter code: {}", num);
+            assert!(
+                num >= 1 && num <= 16,
+                "Invalid fourth quarter code: {}",
+                num
+            );
         }
     }
 }
@@ -352,10 +356,10 @@ fn test_roundtrip_precision() {
 fn test_japan_boundary_coordinates() {
     // 日本の範囲境界付近の座標
     let boundary_coords = vec![
-        (20.5, 136.0),  // 南端付近
-        (45.5, 141.0),  // 北端付近
-        (35.0, 122.5),  // 西端付近
-        (35.0, 153.5),  // 東端付近
+        (20.5, 136.0), // 南端付近
+        (45.5, 141.0), // 北端付近
+        (35.0, 122.5), // 西端付近
+        (35.0, 153.5), // 東端付近
     ];
 
     for (lat, lon) in boundary_coords {
@@ -402,8 +406,10 @@ fn test_conversion_consistency() {
     // メッシュ内の9点をテスト
     for i in 0..3 {
         for j in 0..3 {
-            let lat = bounds.min_lat() + (i as f64 + 0.5) / 3.0 * (bounds.max_lat() - bounds.min_lat());
-            let lon = bounds.min_lon() + (j as f64 + 0.5) / 3.0 * (bounds.max_lon() - bounds.min_lon());
+            let lat =
+                bounds.min_lat() + (i as f64 + 0.5) / 3.0 * (bounds.max_lat() - bounds.min_lat());
+            let lon =
+                bounds.min_lon() + (j as f64 + 0.5) / 3.0 * (bounds.max_lon() - bounds.min_lon());
             let coord = Coordinate::new_unchecked(lat, lon);
             let converted = coord_to_mesh(coord, MeshLevel::Third).unwrap();
 

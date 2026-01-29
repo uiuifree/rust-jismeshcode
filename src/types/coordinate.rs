@@ -1,4 +1,4 @@
-use crate::error::{CoordinateError, CoordResult};
+use crate::error::{CoordResult, CoordinateError};
 
 /// 地理座標（緯度経度）を表す型
 ///

@@ -78,7 +78,7 @@ fn calc_first_mesh(lat: f64, lon: f64) -> u64 {
 }
 
 fn calc_second_mesh(lat: f64, lon: f64, first_code: u64) -> u64 {
-    let first_str = format!("{:04}", first_code);
+    let first_str = format!("{first_code:04}");
     let p = first_str[0..1].parse::<f64>().unwrap();
     let q = first_str[1..2].parse::<f64>().unwrap();
     let r = first_str[2..3].parse::<f64>().unwrap();
@@ -97,7 +97,7 @@ fn calc_second_mesh(lat: f64, lon: f64, first_code: u64) -> u64 {
 }
 
 fn calc_third_mesh(lat: f64, lon: f64, second_code: u64) -> u64 {
-    let second_str = format!("{:06}", second_code);
+    let second_str = format!("{second_code:06}");
     let first_str = &second_str[0..4];
     let p = first_str[0..1].parse::<f64>().unwrap();
     let q = first_str[1..2].parse::<f64>().unwrap();
@@ -121,7 +121,7 @@ fn calc_third_mesh(lat: f64, lon: f64, second_code: u64) -> u64 {
 }
 
 fn calc_fourth_half_mesh(lat: f64, lon: f64, third_code: u64) -> u64 {
-    let third_str = format!("{:08}", third_code);
+    let third_str = format!("{third_code:08}");
     let third_lat = extract_lat_from_third(&third_str);
     let third_lon = extract_lon_from_third(&third_str);
 
@@ -137,19 +137,17 @@ fn calc_fourth_half_mesh(lat: f64, lon: f64, third_code: u64) -> u64 {
         } else {
             3
         }
+    } else if lon_half >= 0.5 {
+        2
     } else {
-        if lon_half >= 0.5 {
-            2
-        } else {
-            4
-        }
+        4
     };
 
     third_code * 10 + index
 }
 
 fn calc_fourth_quarter_mesh(lat: f64, lon: f64, third_code: u64) -> u64 {
-    let third_str = format!("{:08}", third_code);
+    let third_str = format!("{third_code:08}");
     let third_lat = extract_lat_from_third(&third_str);
     let third_lon = extract_lon_from_third(&third_str);
 
@@ -165,7 +163,7 @@ fn calc_fourth_quarter_mesh(lat: f64, lon: f64, third_code: u64) -> u64 {
 }
 
 fn calc_fourth_eighth_mesh(lat: f64, lon: f64, third_code: u64) -> u64 {
-    let third_str = format!("{:08}", third_code);
+    let third_str = format!("{third_code:08}");
     let third_lat = extract_lat_from_third(&third_str);
     let third_lon = extract_lon_from_third(&third_str);
 
@@ -181,7 +179,7 @@ fn calc_fourth_eighth_mesh(lat: f64, lon: f64, third_code: u64) -> u64 {
 }
 
 fn calc_fifth_mesh(lat: f64, lon: f64, third_code: u64) -> u64 {
-    let third_str = format!("{:08}", third_code);
+    let third_str = format!("{third_code:08}");
     let third_lat = extract_lat_from_third(&third_str);
     let third_lon = extract_lon_from_third(&third_str);
 
@@ -204,9 +202,8 @@ fn extract_lat_from_third(third_str: &str) -> f64 {
 
     let first_lat = (p * 10.0 + q) / 1.5;
     let second_lat = first_lat + t * (40.0 / 60.0) / 8.0;
-    let third_lat = second_lat + v * (5.0 / 60.0) / 10.0;
 
-    third_lat
+    second_lat + v * (5.0 / 60.0) / 10.0
 }
 
 fn extract_lon_from_third(third_str: &str) -> f64 {
@@ -217,9 +214,8 @@ fn extract_lon_from_third(third_str: &str) -> f64 {
 
     let first_lon = r * 10.0 + s + 100.0;
     let second_lon = first_lon + u / 8.0;
-    let third_lon = second_lon + w * (7.5 / 60.0) / 10.0;
 
-    third_lon
+    second_lon + w * (7.5 / 60.0) / 10.0
 }
 
 #[cfg(test)]

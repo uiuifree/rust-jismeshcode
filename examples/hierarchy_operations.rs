@@ -42,7 +42,13 @@ fn main() {
 
     while let Some(parent_mesh) = parent(current) {
         level -= 1;
-        println!("   {}次 → {}次: {} → {}", level + 1, level, current, parent_mesh);
+        println!(
+            "   {}次 → {}次: {} → {}",
+            level + 1,
+            level,
+            current,
+            parent_mesh
+        );
         current = parent_mesh;
     }
     println!("   1次メッシュには親がありません");
@@ -59,10 +65,7 @@ fn main() {
     // 1次メッシュの子（2次メッシュ）を取得
     // 1次メッシュは64個（8×8）の2次メッシュに分割される
     let second_children = children(first);
-    println!(
-        "   → 2次メッシュの子供: {} 個",
-        second_children.len()
-    );
+    println!("   → 2次メッシュの子供: {} 個", second_children.len());
     println!(
         "      最初の3個: {:?}",
         &second_children[0..3.min(second_children.len())]
@@ -75,10 +78,7 @@ fn main() {
     // 2次メッシュは100個（10×10）の3次メッシュに分割される
     let second = MeshCode::from_str("533946").unwrap();
     let third_children = children(second);
-    println!(
-        "\n   2次メッシュ {} の子供:",
-        second
-    );
+    println!("\n   2次メッシュ {} の子供:", second);
     println!("   → 3次メッシュの子供: {} 個", third_children.len());
     println!(
         "      最初の5個: {:?}",
@@ -94,11 +94,7 @@ fn main() {
     println!("\n3. レベル変換（一気に親レベルへ変換）:");
 
     let mesh = MeshCode::from_str("53394611").unwrap();
-    println!(
-        "   元のメッシュ: {} (レベル {})",
-        mesh,
-        mesh.level() as u8
-    );
+    println!("   元のメッシュ: {} (レベル {})", mesh, mesh.level() as u8);
 
     // 3次メッシュから2次メッシュへ直接変換
     if let Ok(second) = to_level(mesh, MeshLevel::Second) {
@@ -146,7 +142,10 @@ fn main() {
 
     let second_mesh = MeshCode::from_str("533946").unwrap();
     let second_children = children(second_mesh);
-    println!("   2次メッシュの子供: {} 個（10×10）", second_children.len());
+    println!(
+        "   2次メッシュの子供: {} 個（10×10）",
+        second_children.len()
+    );
 
     let third_mesh = MeshCode::from_str("53394611").unwrap();
     let third_children = children(third_mesh);

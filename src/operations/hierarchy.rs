@@ -61,7 +61,7 @@ pub fn children(mesh: MeshCode) -> Vec<MeshCode> {
             let mut result = Vec::with_capacity(64);
             for t in 0..8 {
                 for u in 0..8 {
-                    let child_str = format!("{}{}{}", code_str, t, u);
+                    let child_str = format!("{code_str}{t}{u}");
                     if let Ok(child) = MeshCode::from_str(&child_str) {
                         result.push(child);
                     }
@@ -73,7 +73,7 @@ pub fn children(mesh: MeshCode) -> Vec<MeshCode> {
             let mut result = Vec::with_capacity(100);
             for v in 0..10 {
                 for w in 0..10 {
-                    let child_str = format!("{}{}{}", code_str, v, w);
+                    let child_str = format!("{code_str}{v}{w}");
                     if let Ok(child) = MeshCode::from_str(&child_str) {
                         result.push(child);
                     }
@@ -84,7 +84,7 @@ pub fn children(mesh: MeshCode) -> Vec<MeshCode> {
         MeshLevel::Third => {
             let mut result = Vec::with_capacity(4);
             for i in 1..=4 {
-                let child_str = format!("{}{}", code_str, i);
+                let child_str = format!("{code_str}{i}");
                 if let Ok(child) = MeshCode::from_str(&child_str) {
                     result.push(child);
                 }
