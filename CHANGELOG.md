@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-01-30
+
+### Added
+- メッシュコードからの半径検索機能（`MeshCodeRadiusIterator`）
+- Haversine公式による正確な距離計算（`haversine_distance`）
+- 座標から半径指定でBoundingBoxを計算する機能（`calculate_bbox_offsets`）
+- 半径検索の包括的なテストケース
+
 ## [0.1.0] - 2026-01-29
 
 ### Added
@@ -26,5 +34,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `std` (default): 標準ライブラリを使用
 - `serde`: Serdeによるシリアライゼーション対応
 
-[Unreleased]: https://github.com/uiuifree/rust-jismeshcode/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/uiuifree/rust-jismeshcode/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/uiuifree/rust-jismeshcode/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/uiuifree/rust-jismeshcode/releases/tag/v0.1.0

@@ -109,9 +109,7 @@ fn test_different_mesh_levels() {
 
     // 正しいレベルのメッシュのみ
     assert!(first_level.iter().all(|m| m.level() == MeshLevel::First));
-    assert!(second_level
-        .iter()
-        .all(|m| m.level() == MeshLevel::Second));
+    assert!(second_level.iter().all(|m| m.level() == MeshLevel::Second));
     assert!(third_level.iter().all(|m| m.level() == MeshLevel::Third));
 
     println!("First level: {} meshes", first_level.len());

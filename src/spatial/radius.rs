@@ -204,8 +204,11 @@ mod tests {
 
     #[test]
     fn test_mesh_codes_in_radius_from_mesh() {
-        let mesh = coord_to_mesh(Coordinate::new(35.6812, 139.7671).unwrap(), MeshLevel::Third)
-            .unwrap();
+        let mesh = coord_to_mesh(
+            Coordinate::new(35.6812, 139.7671).unwrap(),
+            MeshLevel::Third,
+        )
+        .unwrap();
         let nearby: Vec<_> = mesh_codes_in_radius_from_mesh(mesh, 1000.0).collect();
 
         // 中心メッシュ自身を含む
@@ -246,9 +249,7 @@ mod tests {
 
         // レベルが正しい
         assert!(first_level.iter().all(|m| m.level() == MeshLevel::First));
-        assert!(second_level
-            .iter()
-            .all(|m| m.level() == MeshLevel::Second));
+        assert!(second_level.iter().all(|m| m.level() == MeshLevel::Second));
         assert!(third_level.iter().all(|m| m.level() == MeshLevel::Third));
     }
 }
