@@ -1,3 +1,4 @@
+use alloc::string::String;
 use core::fmt;
 
 #[derive(Debug, Clone, PartialEq, Eq)]

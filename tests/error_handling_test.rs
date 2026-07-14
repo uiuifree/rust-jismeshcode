@@ -82,10 +82,16 @@ fn test_non_numeric_mesh_code() {
 
 #[test]
 fn test_invalid_digit_values() {
-    // 各桁の範囲を超える値
-    // 2次メッシュのt,uは0-7のみ有効
-    assert!(MeshCode::from_str("533988").is_ok()); // 8は有効（範囲外かもしれないが形式は正しい）
-    assert!(MeshCode::from_str("533999").is_ok()); // 9は形式的には有効
+    // 各桁の範囲を超える値は拒否される
+    // 2次メッシュの緯度・経度番号（5〜6桁目）は0〜7のみ有効
+    assert!(MeshCode::from_str("533988").is_err());
+    assert!(MeshCode::from_str("533999").is_err());
+    assert!(MeshCode::from_str("533977").is_ok()); // 7は有効
+
+    // 分割地域メッシュの番号（9桁目以降）は1〜4のみ有効
+    assert!(MeshCode::from_str("533946110").is_err());
+    assert!(MeshCode::from_str("533946115").is_err());
+    assert!(MeshCode::from_str("533946114").is_ok());
 }
 
 #[test]
@@ -166,7 +172,7 @@ fn test_empty_bounding_box() {
 
     // イテレータは少なくとも1つのメッシュを返すはず
     let meshes: Vec<_> = mesh_codes_in_bbox(bbox, MeshLevel::Third).collect();
-    assert!(meshes.len() > 0);
+    assert!(!meshes.is_empty());
 }
 
 #[test]
@@ -237,15 +243,10 @@ fn test_large_number_of_meshes() {
     // 経度方向: 1度 / (45秒/3600) ≈ 80個
     // 合計: 約 120 x 80 = 9600個
     let count = mesh_codes_in_bbox(bbox, MeshLevel::Third).count();
-    assert!(
-        count > 5000,
-        "Expected more than 5000 meshes, got {}",
-        count
-    );
+    assert!(count > 5000, "Expected more than 5000 meshes, got {count}");
     assert!(
         count < 15000,
-        "Expected less than 15000 meshes, got {}",
-        count
+        "Expected less than 15000 meshes, got {count}"
     );
 }
 

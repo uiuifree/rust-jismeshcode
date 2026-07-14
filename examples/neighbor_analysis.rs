@@ -18,7 +18,7 @@ fn main() {
     // ========================================
     // 東京駅付近の3次メッシュ
     let mesh = MeshCode::from_str("53394611").unwrap();
-    println!("対象メッシュ: {}", mesh);
+    println!("対象メッシュ: {mesh}");
 
     // メッシュの中心座標を取得
     let center = mesh_to_center(mesh);
@@ -72,10 +72,10 @@ fn main() {
     // 東方向に3回移動してみる
     for i in 1..=3 {
         if let Some(next) = neighbor(current, Direction::East) {
-            println!("  {}回目の東隣: {}", i, next);
+            println!("  {i}回目の東隣: {next}");
             current = next;
         } else {
-            println!("  {}回目: これ以上東に進めません", i);
+            println!("  {i}回目: これ以上東に進めません");
             break;
         }
     }

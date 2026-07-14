@@ -1,5 +1,7 @@
 use crate::error::{MeshCodeError, Result};
 use crate::types::mesh_level::MeshLevel;
+use alloc::format;
+use alloc::string::{String, ToString};
 use core::fmt;
 
 /// メッシュコードを表す型
@@ -7,6 +9,13 @@ use core::fmt;
 /// 内部表現としてu64を使用し、上位8ビットにメッシュレベル、
 /// 下位56ビットにメッシュコード値を格納します。
 /// Copy traitを実装しているため、効率的な値渡しが可能です。
+///
+/// # シリアライズ（`serde`フィーチャー）
+///
+/// `serde`フィーチャー有効時は、メッシュコード文字列（例: `"53394611"`）として
+/// シリアライズ・デシリアライズされます。デシリアライズは[`MeshCode::from_str`]と
+/// 同じ規則でレベルを判定するため、10桁コードの曖昧さ（4分の1メッシュと
+/// 5次メッシュ）に注意してください。
 ///
 /// # 例
 ///
@@ -19,6 +28,8 @@ use core::fmt;
 /// assert_eq!(mesh.as_string(), "5339");
 /// ```
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(into = "String", try_from = "String"))]
 pub struct MeshCode {
     value: u64,
 }
@@ -26,13 +37,48 @@ pub struct MeshCode {
 impl MeshCode {
     /// メッシュレベルとコード値から新しいメッシュコードを作成する
     ///
+    /// コード値がレベルの桁数・番号規則に反する場合は
+    /// [`MeshCodeError::OutOfRange`]を返します。
+    ///
     /// # 引数
     /// * `level` - メッシュレベル
     /// * `code` - メッシュコード値
     pub fn new(level: MeshLevel, code: u64) -> Result<Self> {
+        Self::validate(level, code)?;
         let level_bits = (level.as_u8() as u64) << 56;
         let value = level_bits | (code & 0x00FF_FFFF_FFFF_FFFF);
         Ok(MeshCode { value })
+    }
+
+    /// コード値がメッシュレベルの規則に適合するか検証する
+    fn validate(level: MeshLevel, code: u64) -> Result<()> {
+        let len = level.code_length() as u32;
+        if code >= 10u64.pow(len) {
+            return Err(MeshCodeError::OutOfRange);
+        }
+
+        // 左からi番目（0始まり）の桁を取り出す
+        let digit = |i: u32| (code / 10u64.pow(len - 1 - i)) % 10;
+
+        // 2次メッシュの緯度・経度番号（5〜6桁目）は0〜7
+        if len >= 6 && (digit(4) > 7 || digit(5) > 7) {
+            return Err(MeshCodeError::OutOfRange);
+        }
+
+        // 分割地域メッシュの番号（9桁目以降）は1〜4
+        let subdivision_digits: &[u32] = match level {
+            MeshLevel::FourthHalf => &[8],
+            MeshLevel::FourthQuarter => &[8, 9],
+            MeshLevel::FourthEighth => &[8, 9, 10],
+            _ => &[],
+        };
+        for &i in subdivision_digits {
+            if !(1..=4).contains(&digit(i)) {
+                return Err(MeshCodeError::OutOfRange);
+            }
+        }
+
+        Ok(())
     }
 
     /// 文字列からメッシュコードをパースする
@@ -97,6 +143,28 @@ impl MeshCode {
     }
 }
 
+impl core::str::FromStr for MeshCode {
+    type Err = MeshCodeError;
+
+    fn from_str(s: &str) -> Result<Self> {
+        MeshCode::from_str(s)
+    }
+}
+
+impl From<MeshCode> for String {
+    fn from(mesh: MeshCode) -> Self {
+        mesh.as_string()
+    }
+}
+
+impl TryFrom<String> for MeshCode {
+    type Error = MeshCodeError;
+
+    fn try_from(s: String) -> Result<Self> {
+        MeshCode::from_str(&s)
+    }
+}
+
 impl fmt::Debug for MeshCode {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("MeshCode")
@@ -146,6 +214,6 @@ mod tests {
     fn test_mesh_code_display() {
         let mesh = MeshCode::from_str("0001").unwrap();
         assert_eq!(mesh.as_string(), "0001");
-        assert_eq!(format!("{}", mesh), "0001");
+        assert_eq!(format!("{mesh}"), "0001");
     }
 }

@@ -64,47 +64,50 @@ fn calc_third_mesh_sw(code_str: &str) -> (f64, f64) {
     (lat, lon)
 }
 
+/// 分割地域メッシュの番号（1〜4）から南西端オフセットの単位を返す
+///
+/// JIS X 0410の番号付け（南西=1、南東=2、北西=3、北東=4）に対応します。
+/// 戻り値は（緯度方向、経度方向）で、各値は0または1です。
+fn subdivision_offset_units(digit: u32) -> (f64, f64) {
+    let index = digit - 1;
+    ((index / 2) as f64, (index % 2) as f64)
+}
+
+const THIRD_LAT_SIZE: f64 = 30.0 / 3600.0;
+const THIRD_LON_SIZE: f64 = 45.0 / 3600.0;
+
 fn calc_fourth_half_mesh_sw(code_str: &str) -> (f64, f64) {
     let (third_lat, third_lon) = calc_third_mesh_sw(&code_str[0..8]);
 
-    let index = code_str[8..9].parse::<i32>().unwrap();
+    let digit = code_str[8..9].parse::<u32>().unwrap();
+    let (lat_units, lon_units) = subdivision_offset_units(digit);
 
-    let (lat_offset, lon_offset) = match index {
-        1 => (0.5, 0.5),
-        2 => (0.0, 0.5),
-        3 => (0.5, 0.0),
-        4 => (0.0, 0.0),
-        _ => (0.0, 0.0),
-    };
-
-    let lat = third_lat + lat_offset * (30.0 / 3600.0);
-    let lon = third_lon + lon_offset * (45.0 / 3600.0);
+    let lat = third_lat + lat_units * (THIRD_LAT_SIZE / 2.0);
+    let lon = third_lon + lon_units * (THIRD_LON_SIZE / 2.0);
 
     (lat, lon)
 }
 
 fn calc_fourth_quarter_mesh_sw(code_str: &str) -> (f64, f64) {
-    let (third_lat, third_lon) = calc_third_mesh_sw(&code_str[0..8]);
+    let (half_lat, half_lon) = calc_fourth_half_mesh_sw(&code_str[0..9]);
 
-    let index = code_str[8..10].parse::<i32>().unwrap() - 1;
-    let lat_index = index / 4;
-    let lon_index = index % 4;
+    let digit = code_str[9..10].parse::<u32>().unwrap();
+    let (lat_units, lon_units) = subdivision_offset_units(digit);
 
-    let lat = third_lat + lat_index as f64 * (7.5 / 3600.0);
-    let lon = third_lon + lon_index as f64 * (11.25 / 3600.0);
+    let lat = half_lat + lat_units * (THIRD_LAT_SIZE / 4.0);
+    let lon = half_lon + lon_units * (THIRD_LON_SIZE / 4.0);
 
     (lat, lon)
 }
 
 fn calc_fourth_eighth_mesh_sw(code_str: &str) -> (f64, f64) {
-    let (third_lat, third_lon) = calc_third_mesh_sw(&code_str[0..8]);
+    let (quarter_lat, quarter_lon) = calc_fourth_quarter_mesh_sw(&code_str[0..10]);
 
-    let index = code_str[8..11].parse::<i32>().unwrap() - 1;
-    let lat_index = index / 8;
-    let lon_index = index % 8;
+    let digit = code_str[10..11].parse::<u32>().unwrap();
+    let (lat_units, lon_units) = subdivision_offset_units(digit);
 
-    let lat = third_lat + lat_index as f64 * (3.75 / 3600.0);
-    let lon = third_lon + lon_index as f64 * (5.625 / 3600.0);
+    let lat = quarter_lat + lat_units * (THIRD_LAT_SIZE / 8.0);
+    let lon = quarter_lon + lon_units * (THIRD_LON_SIZE / 8.0);
 
     (lat, lon)
 }
@@ -112,12 +115,12 @@ fn calc_fourth_eighth_mesh_sw(code_str: &str) -> (f64, f64) {
 fn calc_fifth_mesh_sw(code_str: &str) -> (f64, f64) {
     let (third_lat, third_lon) = calc_third_mesh_sw(&code_str[0..8]);
 
-    let index = code_str[8..10].parse::<i32>().unwrap() - 1;
-    let lat_index = index / 10;
-    let lon_index = index % 10;
+    // 9桁目が緯度方向番号（0〜9）、10桁目が経度方向番号（0〜9）
+    let lat_no = code_str[8..9].parse::<f64>().unwrap();
+    let lon_no = code_str[9..10].parse::<f64>().unwrap();
 
-    let lat = third_lat + lat_index as f64 * (3.0 / 3600.0);
-    let lon = third_lon + lon_index as f64 * (4.5 / 3600.0);
+    let lat = third_lat + lat_no * (3.0 / 3600.0);
+    let lon = third_lon + lon_no * (4.5 / 3600.0);
 
     (lat, lon)
 }

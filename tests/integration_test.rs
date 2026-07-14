@@ -53,7 +53,7 @@ fn test_bbox_iteration() {
 
     let meshes: Vec<_> = mesh_codes_in_bbox(bbox, MeshLevel::Third).collect();
 
-    assert!(meshes.len() > 0);
+    assert!(!meshes.is_empty());
     for mesh in meshes {
         let center = mesh_to_center(mesh);
         assert!(

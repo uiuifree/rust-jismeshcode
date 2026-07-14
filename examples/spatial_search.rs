@@ -82,7 +82,7 @@ fn main() {
     if !meshes_2nd.is_empty() {
         println!("\n  2次メッシュコード一覧:");
         for mesh in &meshes_2nd {
-            println!("    {}", mesh);
+            println!("    {mesh}");
         }
     }
 
@@ -95,7 +95,7 @@ fn main() {
 
     // 1次メッシュは非常に広いため、通常は1〜2個程度
     for mesh in &meshes_1st {
-        println!("    {}", mesh);
+        println!("    {mesh}");
     }
 
     // ========================================
@@ -112,5 +112,5 @@ fn main() {
         // 例: データベースから該当メッシュのデータを取得、集計など
         // let data = fetch_data_from_db(_mesh);
     }
-    println!("  処理したメッシュ数: {} 個", count);
+    println!("  処理したメッシュ数: {count} 個");
 }

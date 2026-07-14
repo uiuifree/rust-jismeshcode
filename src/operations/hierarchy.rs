@@ -1,5 +1,8 @@
 use crate::error::Result;
 use crate::types::{MeshCode, MeshLevel};
+use alloc::format;
+use alloc::string::ToString;
+use alloc::vec::Vec;
 
 /// メッシュコードの親メッシュを取得する
 ///
@@ -36,6 +39,9 @@ pub fn parent(mesh: MeshCode) -> Option<MeshCode> {
 ///
 /// 1次メッシュは64個の2次メッシュを、2次メッシュは100個の3次メッシュを、
 /// 3次メッシュは4個の4次メッシュ（2分の1）を子として持ちます。
+/// 分割地域メッシュはさらに4分割され、2分の1は4個の4分の1を、
+/// 4分の1は4個の8分の1を子として持ちます。
+/// 8分の1メッシュと5次メッシュに子はありません。
 ///
 /// # 引数
 /// * `mesh` - 対象のメッシュコード
@@ -81,20 +87,30 @@ pub fn children(mesh: MeshCode) -> Vec<MeshCode> {
             }
             result
         }
-        MeshLevel::Third => {
-            let mut result = Vec::with_capacity(4);
-            for i in 1..=4 {
-                let child_str = format!("{code_str}{i}");
-                if let Ok(child) = MeshCode::from_str(&child_str) {
-                    result.push(child);
-                }
-            }
-            result
-        }
-        _ => Vec::new(),
+        MeshLevel::Third => subdivision_children(&code_str, MeshLevel::FourthHalf),
+        MeshLevel::FourthHalf => subdivision_children(&code_str, MeshLevel::FourthQuarter),
+        MeshLevel::FourthQuarter => subdivision_children(&code_str, MeshLevel::FourthEighth),
+        MeshLevel::FourthEighth | MeshLevel::Fifth => Vec::new(),
     }
 }
 
+/// 分割地域メッシュの子（番号1〜4を付加したコード）を生成する
+fn subdivision_children(code_str: &str, child_level: MeshLevel) -> Vec<MeshCode> {
+    let mut result = Vec::with_capacity(4);
+    for i in 1..=4 {
+        let child_code = format!("{code_str}{i}").parse::<u64>().unwrap();
+        if let Ok(child) = MeshCode::new(child_level, child_code) {
+            result.push(child);
+        }
+    }
+    result
+}
+
+/// メッシュコードを指定レベルへ変換する
+///
+/// 対象レベルが現在のレベルの祖先（親をたどって到達できるレベル）の場合のみ
+/// 変換できます。細かいレベルへの変換や、別系統のレベル
+/// （例: 5次メッシュ→2分の1メッシュ）への変換はエラーになります。
 pub fn to_level(mesh: MeshCode, target_level: MeshLevel) -> Result<MeshCode> {
     let current_level = mesh.level();
 
@@ -102,22 +118,23 @@ pub fn to_level(mesh: MeshCode, target_level: MeshLevel) -> Result<MeshCode> {
         return Ok(mesh);
     }
 
-    if current_level < target_level {
+    let mut level = current_level;
+    let is_ancestor = loop {
+        match level.parent() {
+            Some(parent) if parent == target_level => break true,
+            Some(parent) => level = parent,
+            None => break false,
+        }
+    };
+
+    if !is_ancestor {
         return Err(crate::error::MeshCodeError::InvalidFormat(
-            "Cannot convert to finer level without additional information".to_string(),
+            "Target level is not an ancestor of the current level".to_string(),
         ));
     }
 
     let code_str = mesh.as_string();
-    let target_len = target_level.code_length();
-
-    if code_str.len() < target_len {
-        return Err(crate::error::MeshCodeError::InvalidFormat(
-            "Invalid level conversion".to_string(),
-        ));
-    }
-
-    let target_code_str = &code_str[0..target_len];
+    let target_code_str = &code_str[0..target_level.code_length()];
     MeshCode::from_str(target_code_str)
 }
 

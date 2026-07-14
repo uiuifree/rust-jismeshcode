@@ -11,7 +11,7 @@ fn test_specific_location_basic() {
     let lon = 139.6716674;
 
     println!("\n========================================");
-    println!("座標: ({}, {})", lat, lon);
+    println!("座標: ({lat}, {lon})");
     println!("========================================");
 
     let coord = Coordinate::new(lat, lon).unwrap();
@@ -158,7 +158,7 @@ fn test_specific_location_neighbors() {
     // 検証: 隣接メッシュが最大8個であることを確認
     assert!(all_neighbors.len() <= 8);
     assert!(
-        all_neighbors.len() > 0,
+        !all_neighbors.is_empty(),
         "隣接メッシュが1つも見つかりませんでした"
     );
 }
@@ -197,8 +197,7 @@ fn test_specific_location_roundtrip() {
         // 検証: 元の座標がメッシュ内に含まれることを確認
         assert!(
             bounds.contains(coord),
-            "{:?}メッシュのラウンドトリップに失敗しました",
-            level
+            "{level:?}メッシュのラウンドトリップに失敗しました"
         );
     }
 }
@@ -301,11 +300,7 @@ fn test_specific_location_surrounding_area() {
     println!("北");
     println!("  ↑");
     for (i, row) in grid.iter().enumerate() {
-        if i == 0 {
-            print!("  ");
-        } else {
-            print!("  ");
-        }
+        print!("  ");
         for (j, mesh) in row.iter().enumerate() {
             if i == 1 && j == 1 {
                 print!("[{}] ", mesh.as_string());

@@ -1,5 +1,6 @@
 use crate::convert::{coord_to_mesh, mesh_to_center};
 use crate::types::{Direction, MeshCode};
+use alloc::vec::Vec;
 
 /// 指定された方向の隣接メッシュを取得する
 ///
@@ -82,6 +83,6 @@ mod tests {
         let mesh = MeshCode::from_str("53393599").unwrap();
         let all_neighbors = neighbors(mesh);
         assert!(all_neighbors.len() <= 8);
-        assert!(all_neighbors.len() > 0);
+        assert!(!all_neighbors.is_empty());
     }
 }

@@ -62,6 +62,15 @@
 - **4次メッシュ（8分の1）**: 約125m（11桁）
 - **5次メッシュ**: 約100m（10桁）
 
+分割地域メッシュ（2分の1・4分の1・8分の1）の番号は、JIS X 0410に従い
+「南西=1、南東=2、北西=3、北東=4」の順で階層的に付加されます。
+5次メッシュ（100mメッシュ）は3次メッシュコードに緯度方向番号（0〜9）と
+経度方向番号（0〜9）を付加した形式です。
+
+> **10桁コードの曖昧さについて**: 4次メッシュ（4分の1）と5次メッシュはどちらも10桁です。
+> `MeshCode::from_str`は9〜10桁目がともに1〜4の場合に4次メッシュ（4分の1）と判定します。
+> 5次メッシュとして扱いたい場合は`MeshCode::new(MeshLevel::Fifth, code)`でレベルを明示してください。
+
 ## 主要な型
 
 ### `MeshCode`
@@ -276,21 +285,21 @@ for nearby_mesh in mesh_codes_in_radius(coord, 1000.0, MeshLevel::Third) {
 
 ```toml
 [dependencies]
-jismeshcode = "0.2"
+jismeshcode = "0.3"
 ```
 
-`no_std`環境の場合：
+`no_std`環境の場合（数学関数のために`libm`フィーチャーが必要です）：
 
 ```toml
 [dependencies]
-jismeshcode = { version = "0.2", default-features = false }
+jismeshcode = { version = "0.3", default-features = false, features = ["libm"] }
 ```
 
 `serde`対応が必要な場合：
 
 ```toml
 [dependencies]
-jismeshcode = { version = "0.2", features = ["serde"] }
+jismeshcode = { version = "0.3", features = ["serde"] }
 ```
 
 ## サンプルコード

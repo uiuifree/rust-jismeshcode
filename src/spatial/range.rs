@@ -90,7 +90,7 @@ mod tests {
         let bbox = BoundingBox::new(sw, ne);
 
         let meshes: Vec<_> = mesh_codes_in_bbox(bbox, MeshLevel::Third).collect();
-        assert!(meshes.len() > 0);
+        assert!(!meshes.is_empty());
         assert!(meshes.iter().all(|m| m.level() == MeshLevel::Third));
     }
 }

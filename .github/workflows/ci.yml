@@ -48,7 +48,18 @@ jobs:
         with:
           components: clippy
       - name: Run clippy
-        run: cargo clippy --all-features -- -D warnings
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+  no-std:
+    name: no_std build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: thumbv7em-none-eabihf
+      - name: Build for no_std target
+        run: cargo build --no-default-features --features libm,serde --target thumbv7em-none-eabihf
 
   doc:
     name: Documentation

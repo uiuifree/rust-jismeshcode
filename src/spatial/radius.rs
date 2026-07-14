@@ -186,9 +186,7 @@ mod tests {
             let distance = haversine_distance(tokyo, mesh_center);
             assert!(
                 distance <= 1000.0,
-                "メッシュ {} の距離 {:.2}m は1000m以内",
-                mesh,
-                distance
+                "メッシュ {mesh} の距離 {distance:.2}m は1000m以内"
             );
         }
     }

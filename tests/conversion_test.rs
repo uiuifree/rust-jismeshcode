@@ -82,11 +82,10 @@ fn test_second_mesh_all_subdivisions() {
     // t=0〜7, u=0〜7の全組み合わせが存在することを確認
     for t in 0..8 {
         for u in 0..8 {
-            let expected = format!("5339{}{}", t, u);
+            let expected = format!("5339{t}{u}");
             assert!(
                 children_list.iter().any(|m| m.as_string() == expected),
-                "Missing second mesh: {}",
-                expected
+                "Missing second mesh: {expected}"
             );
         }
     }
@@ -127,11 +126,10 @@ fn test_third_mesh_all_subdivisions() {
     // v=0〜9, w=0〜9の全組み合わせが存在することを確認
     for v in 0..10 {
         for w in 0..10 {
-            let expected = format!("533946{}{}", v, w);
+            let expected = format!("533946{v}{w}");
             assert!(
                 children_list.iter().any(|m| m.as_string() == expected),
-                "Missing third mesh: {}",
-                expected
+                "Missing third mesh: {expected}"
             );
         }
     }
@@ -181,11 +179,10 @@ fn test_fourth_half_mesh_all_subdivisions() {
 
     // 1,2,3,4のすべてが存在することを確認
     for i in 1..=4 {
-        let expected = format!("53394611{}", i);
+        let expected = format!("53394611{i}");
         assert!(
             children_list.iter().any(|m| m.as_string() == expected),
-            "Missing fourth half mesh: {}",
-            expected
+            "Missing fourth half mesh: {expected}"
         );
     }
 }
@@ -193,15 +190,16 @@ fn test_fourth_half_mesh_all_subdivisions() {
 #[test]
 fn test_fourth_half_mesh_quadrants() {
     // 4次メッシュ（2分の1）の4象限を確認
+    // JIS X 0410: 南西=1、南東=2、北西=3、北東=4
     let third_str = "53394611";
     let third_bounds = mesh_to_bounds(MeshCode::from_str(third_str).unwrap());
 
     let lat_mid = (third_bounds.min_lat() + third_bounds.max_lat()) / 2.0;
     let lon_mid = (third_bounds.min_lon() + third_bounds.max_lon()) / 2.0;
 
-    // 北東象限（1）
-    let ne = Coordinate::new_unchecked(lat_mid + 0.001, lon_mid + 0.001);
-    let mesh = coord_to_mesh(ne, MeshLevel::FourthHalf).unwrap();
+    // 南西象限（1）
+    let sw = Coordinate::new_unchecked(lat_mid - 0.001, lon_mid - 0.001);
+    let mesh = coord_to_mesh(sw, MeshLevel::FourthHalf).unwrap();
     assert_eq!(mesh.as_string(), "533946111");
 
     // 南東象限（2）
@@ -214,9 +212,9 @@ fn test_fourth_half_mesh_quadrants() {
     let mesh = coord_to_mesh(nw, MeshLevel::FourthHalf).unwrap();
     assert_eq!(mesh.as_string(), "533946113");
 
-    // 南西象限（4）
-    let sw = Coordinate::new_unchecked(lat_mid - 0.001, lon_mid - 0.001);
-    let mesh = coord_to_mesh(sw, MeshLevel::FourthHalf).unwrap();
+    // 北東象限（4）
+    let ne = Coordinate::new_unchecked(lat_mid + 0.001, lon_mid + 0.001);
+    let mesh = coord_to_mesh(ne, MeshLevel::FourthHalf).unwrap();
     assert_eq!(mesh.as_string(), "533946114");
 }
 
@@ -229,14 +227,18 @@ fn test_fourth_quarter_mesh_conversion() {
     let coord = Coordinate::new(35.6812, 139.7671).unwrap();
     let mesh = coord_to_mesh(coord, MeshLevel::FourthQuarter).unwrap();
 
-    // 親メッシュが3次メッシュであることを確認
+    // 親メッシュが4次メッシュ（2分の1）であることを確認
     let parent_mesh = parent(mesh).unwrap();
-    assert_eq!(parent_mesh.level(), MeshLevel::Third);
+    assert_eq!(parent_mesh.level(), MeshLevel::FourthHalf);
+
+    // 祖父メッシュが3次メッシュであることを確認
+    let grandparent_mesh = parent(parent_mesh).unwrap();
+    assert_eq!(grandparent_mesh.level(), MeshLevel::Third);
 }
 
 #[test]
 fn test_fourth_quarter_mesh_range() {
-    // 4次メッシュ（4分の1）は01〜16の範囲
+    // 4次メッシュ（4分の1）の末尾2桁は各1〜4（JIS X 0410の階層的な分割番号）
     let third = MeshCode::from_str("53394611").unwrap();
     let bounds = mesh_to_bounds(third);
 
@@ -251,15 +253,17 @@ fn test_fourth_quarter_mesh_range() {
             let coord = Coordinate::new_unchecked(lat, lon);
             let mesh = coord_to_mesh(coord, MeshLevel::FourthQuarter).unwrap();
 
-            // コードの末尾が01〜16の範囲内であることを確認
+            // 9桁目（2分の1番号）と10桁目（4分の1番号）がともに1〜4であることを確認
             let code_str = mesh.as_string();
-            let last_two = &code_str[code_str.len() - 2..];
-            let num: u32 = last_two.parse().unwrap();
+            let half_digit: u32 = code_str[8..9].parse().unwrap();
+            let quarter_digit: u32 = code_str[9..10].parse().unwrap();
             assert!(
-                num >= 1 && num <= 16,
-                "Invalid fourth quarter code: {}",
-                num
+                (1..=4).contains(&half_digit) && (1..=4).contains(&quarter_digit),
+                "Invalid fourth quarter code: {code_str}"
             );
+
+            // 元の座標がメッシュ境界内に含まれることを確認
+            assert!(mesh_to_bounds(mesh).contains(coord));
         }
     }
 }
@@ -309,8 +313,7 @@ fn test_roundtrip_all_levels() {
         // 元の座標がメッシュの境界内に含まれることを確認
         assert!(
             bounds.contains(original_coord),
-            "Roundtrip failed for level {:?}",
-            level
+            "Roundtrip failed for level {level:?}"
         );
     }
 }
@@ -337,13 +340,11 @@ fn test_roundtrip_precision() {
 
         assert!(
             lat_diff < 15.0 / 3600.0,
-            "Latitude difference too large: {}",
-            lat_diff
+            "Latitude difference too large: {lat_diff}"
         );
         assert!(
             lon_diff < 22.5 / 3600.0,
-            "Longitude difference too large: {}",
-            lon_diff
+            "Longitude difference too large: {lon_diff}"
         );
     }
 }
@@ -416,9 +417,7 @@ fn test_conversion_consistency() {
             assert_eq!(
                 converted.as_string(),
                 mesh.as_string(),
-                "Inconsistent conversion at ({}, {})",
-                lat,
-                lon
+                "Inconsistent conversion at ({lat}, {lon})"
             );
         }
     }

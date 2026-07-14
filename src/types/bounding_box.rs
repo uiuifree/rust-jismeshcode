@@ -1,6 +1,7 @@
 use crate::types::coordinate::Coordinate;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct BoundingBox {
     south_west: Coordinate,
     north_east: Coordinate,

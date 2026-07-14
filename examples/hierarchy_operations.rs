@@ -60,7 +60,7 @@ fn main() {
 
     // 1次メッシュから開始
     let first = MeshCode::from_str("5339").unwrap();
-    println!("   1次メッシュ: {}", first);
+    println!("   1次メッシュ: {first}");
 
     // 1次メッシュの子（2次メッシュ）を取得
     // 1次メッシュは64個（8×8）の2次メッシュに分割される
@@ -78,7 +78,7 @@ fn main() {
     // 2次メッシュは100個（10×10）の3次メッシュに分割される
     let second = MeshCode::from_str("533946").unwrap();
     let third_children = children(second);
-    println!("\n   2次メッシュ {} の子供:", second);
+    println!("\n   2次メッシュ {second} の子供:");
     println!("   → 3次メッシュの子供: {} 個", third_children.len());
     println!(
         "      最初の5個: {:?}",
@@ -98,12 +98,12 @@ fn main() {
 
     // 3次メッシュから2次メッシュへ直接変換
     if let Ok(second) = to_level(mesh, MeshLevel::Second) {
-        println!("   → 2次メッシュへ変換: {}", second);
+        println!("   → 2次メッシュへ変換: {second}");
     }
 
     // 3次メッシュから1次メッシュへ直接変換
     if let Ok(first) = to_level(mesh, MeshLevel::First) {
-        println!("   → 1次メッシュへ変換: {}", first);
+        println!("   → 1次メッシュへ変換: {first}");
     }
 
     // 注意: 親から子へは変換できない（情報が足りないため）

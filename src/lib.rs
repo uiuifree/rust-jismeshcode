@@ -1,4 +1,5 @@
 #![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
 #![doc = include_str!("../README.md")]
 
 //! # jismeshcode
@@ -26,6 +27,14 @@
 //! let center = mesh_to_center(mesh);
 //! println!("中心座標: ({}, {})", center.lat(), center.lon());
 //! ```
+
+#[cfg(all(not(feature = "std"), not(feature = "libm")))]
+compile_error!(
+    "`no_std`環境では`libm`フィーチャーが必要です。\
+     Cargo.tomlで `jismeshcode = { version = \"0.3\", default-features = false, features = [\"libm\"] }` を指定してください。"
+);
+
+extern crate alloc;
 
 /// 座標とメッシュコードの変換機能
 pub mod convert;

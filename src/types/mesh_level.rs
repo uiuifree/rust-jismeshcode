@@ -5,6 +5,7 @@ use crate::error::{MeshCodeError, Result};
 /// JIS X 0410で定義されている各メッシュレベルに対応します。
 /// レベルが大きいほど、より細かい地域を表します。
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[repr(u8)]
 pub enum MeshLevel {
     /// 1次メッシュ（約80km四方、4桁）
@@ -46,6 +47,14 @@ impl MeshLevel {
     /// メッシュコード文字列からメッシュレベルを判定する
     ///
     /// 10桁のメッシュコードの場合、4次メッシュ（4分の1）と5次メッシュを区別します。
+    /// 9桁目と10桁目がともに1〜4の場合は4次メッシュ（4分の1）と判定します。
+    ///
+    /// # 注意
+    ///
+    /// 10桁のコードは本質的に曖昧です。5次メッシュ（100mメッシュ）のうち
+    /// 緯度・経度方向番号がともに1〜4のものは、4分の1メッシュと同じ表記になるため
+    /// 4分の1メッシュとして解釈されます。5次メッシュとして扱う場合は
+    /// [`crate::MeshCode::new`]でレベルを明示してください。
     ///
     /// # 引数
     /// * `code_str` - メッシュコード文字列
@@ -55,12 +64,13 @@ impl MeshLevel {
     pub fn from_code_string(code_str: &str) -> Result<Self> {
         let len = code_str.len();
         if len == 10 {
-            let ninth_digit = code_str.chars().nth(8).unwrap();
-            if ('1'..='4').contains(&ninth_digit) {
+            let mut digits = code_str.chars().skip(8);
+            let ninth = digits.next().unwrap();
+            let tenth = digits.next().unwrap();
+            if ('1'..='4').contains(&ninth) && ('1'..='4').contains(&tenth) {
                 return Ok(MeshLevel::FourthQuarter);
-            } else {
-                return Ok(MeshLevel::Fifth);
             }
+            return Ok(MeshLevel::Fifth);
         }
         Self::from_code_length(len)
     }
@@ -118,14 +128,17 @@ impl MeshLevel {
     }
 
     /// このメッシュレベルの親レベルを返す（1次メッシュの場合はNone）
+    ///
+    /// 分割地域メッシュは段階的に分割されるため、4分の1の親は2分の1、
+    /// 8分の1の親は4分の1になります。5次メッシュ（100m）の親は3次メッシュです。
     pub fn parent(self) -> Option<Self> {
         match self {
             MeshLevel::First => None,
             MeshLevel::Second => Some(MeshLevel::First),
             MeshLevel::Third => Some(MeshLevel::Second),
             MeshLevel::FourthHalf => Some(MeshLevel::Third),
-            MeshLevel::FourthQuarter => Some(MeshLevel::Third),
-            MeshLevel::FourthEighth => Some(MeshLevel::Third),
+            MeshLevel::FourthQuarter => Some(MeshLevel::FourthHalf),
+            MeshLevel::FourthEighth => Some(MeshLevel::FourthQuarter),
             MeshLevel::Fifth => Some(MeshLevel::Third),
         }
     }

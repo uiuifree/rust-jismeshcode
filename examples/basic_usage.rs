@@ -22,15 +22,15 @@ fn main() {
 
     // 1次メッシュ（約80km四方）に変換
     let mesh_first = coord_to_mesh(coord, MeshLevel::First).unwrap();
-    println!("   1次メッシュ: {}", mesh_first);
+    println!("   1次メッシュ: {mesh_first}");
 
     // 2次メッシュ（約10km四方）に変換
     let mesh_second = coord_to_mesh(coord, MeshLevel::Second).unwrap();
-    println!("   2次メッシュ: {}", mesh_second);
+    println!("   2次メッシュ: {mesh_second}");
 
     // 3次メッシュ（約1km四方）に変換
     let mesh_third = coord_to_mesh(coord, MeshLevel::Third).unwrap();
-    println!("   3次メッシュ: {}", mesh_third);
+    println!("   3次メッシュ: {mesh_third}");
 
     // ========================================
     // 2. メッシュの境界を取得
@@ -60,7 +60,7 @@ fn main() {
     // ========================================
     println!("\n4. 座標がメッシュ内に含まれるか確認:");
     let in_mesh = contains(mesh_third, coord);
-    println!("   座標はメッシュ内にある: {}", in_mesh);
+    println!("   座標はメッシュ内にある: {in_mesh}");
 
     // ========================================
     // 5. 親メッシュを取得
@@ -68,7 +68,7 @@ fn main() {
     println!("\n5. 親メッシュを取得:");
     // 3次メッシュの親は2次メッシュになります
     if let Some(parent_mesh) = parent(mesh_third) {
-        println!("   {} の親メッシュ: {}", mesh_third, parent_mesh);
+        println!("   {mesh_third} の親メッシュ: {parent_mesh}");
     }
 
     // ========================================

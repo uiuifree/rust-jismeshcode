@@ -19,9 +19,7 @@ fn test_basic_radius_search_1000m() {
         let distance = haversine_distance(tokyo, mesh_center);
         assert!(
             distance <= 1000.0,
-            "メッシュ {} の距離 {:.2}m は1000m以内であるべき",
-            mesh,
-            distance
+            "メッシュ {mesh} の距離 {distance:.2}m は1000m以内であるべき"
         );
     }
 }
@@ -47,8 +45,7 @@ fn test_mesh_based_radius_search() {
         let distance = haversine_distance(center, m_center);
         assert!(
             distance <= 1000.0,
-            "距離 {:.2}m は1000m以内であるべき",
-            distance
+            "距離 {distance:.2}m は1000m以内であるべき"
         );
     }
 }
@@ -164,8 +161,7 @@ fn test_large_radius() {
         let distance = haversine_distance(tokyo, mesh_center);
         assert!(
             distance <= 50000.0,
-            "距離 {:.2}m は50km以内であるべき",
-            distance
+            "距離 {distance:.2}m は50km以内であるべき"
         );
     }
 
@@ -178,7 +174,7 @@ fn test_edge_case_japan_boundary() {
     let hokkaido = Coordinate::new(45.0, 141.0).unwrap();
     let meshes: Vec<_> = mesh_codes_in_radius(hokkaido, 5000.0, MeshLevel::Third).collect();
 
-    assert!(meshes.len() > 0);
+    assert!(!meshes.is_empty());
     assert!(meshes.iter().all(|m| m.level() == MeshLevel::Third));
 }
 

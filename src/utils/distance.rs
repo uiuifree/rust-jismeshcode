@@ -1,4 +1,5 @@
 use crate::types::Coordinate;
+use crate::utils::math;
 
 /// 地球の半径（メートル）
 const EARTH_RADIUS_METERS: f64 = 6371000.0;
@@ -35,8 +36,10 @@ pub fn haversine_distance(coord1: Coordinate, coord2: Coordinate) -> f64 {
     let dlon = lon2 - lon1;
 
     // Haversine公式
-    let a = (dlat / 2.0).sin().powi(2) + lat1.cos() * lat2.cos() * (dlon / 2.0).sin().powi(2);
-    let c = 2.0 * a.sqrt().atan2((1.0 - a).sqrt());
+    let sin_dlat = math::sin(dlat / 2.0);
+    let sin_dlon = math::sin(dlon / 2.0);
+    let a = sin_dlat * sin_dlat + math::cos(lat1) * math::cos(lat2) * sin_dlon * sin_dlon;
+    let c = 2.0 * math::atan2(math::sqrt(a), math::sqrt(1.0 - a));
 
     EARTH_RADIUS_METERS * c
 }
@@ -58,7 +61,7 @@ pub(crate) fn calculate_bbox_offsets(center: Coordinate, radius_meters: f64) -> 
 
     // 経度1度の距離は緯度により変わる（極に近いほど短くなる）
     // cos(緯度)で補正
-    let lon_offset = radius_meters / (111320.0 * center.lat().to_radians().cos());
+    let lon_offset = radius_meters / (111320.0 * math::cos(center.lat().to_radians()));
 
     (lat_offset, lon_offset)
 }

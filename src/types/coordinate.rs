@@ -4,6 +4,13 @@ use crate::error::{CoordResult, CoordinateError};
 ///
 /// 日本の範囲内（緯度20-46度、経度122-154度）の座標のみを受け付けます。
 ///
+/// # シリアライズ（`serde`フィーチャー）
+///
+/// `serde`フィーチャー有効時は`{ "lat": ..., "lon": ... }`の形式で
+/// シリアライズされます。デシリアライズ時は緯度±90度・経度±180度の
+/// 基本範囲のみ検証します（メッシュ境界の座標は日本範囲をわずかに
+/// 超えることがあるため、日本範囲チェックは行いません）。
+///
 /// # 例
 ///
 /// ```
@@ -15,9 +22,37 @@ use crate::error::{CoordResult, CoordinateError};
 /// assert_eq!(coord.lon(), 139.7671);
 /// ```
 #[derive(Debug, Clone, Copy, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(try_from = "CoordinateRaw"))]
 pub struct Coordinate {
     lat: f64,
     lon: f64,
+}
+
+/// デシリアライズ時の検証用中間表現
+#[cfg(feature = "serde")]
+#[derive(serde::Deserialize)]
+struct CoordinateRaw {
+    lat: f64,
+    lon: f64,
+}
+
+#[cfg(feature = "serde")]
+impl TryFrom<CoordinateRaw> for Coordinate {
+    type Error = CoordinateError;
+
+    fn try_from(raw: CoordinateRaw) -> core::result::Result<Self, Self::Error> {
+        if !(-90.0..=90.0).contains(&raw.lat) {
+            return Err(CoordinateError::InvalidLatitude(raw.lat));
+        }
+        if !(-180.0..=180.0).contains(&raw.lon) {
+            return Err(CoordinateError::InvalidLongitude(raw.lon));
+        }
+        Ok(Coordinate {
+            lat: raw.lat,
+            lon: raw.lon,
+        })
+    }
 }
 
 impl Coordinate {
