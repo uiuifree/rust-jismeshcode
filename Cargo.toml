@@ -1,8 +1,8 @@
 [package]
 name = "jismeshcode"
-version = "0.3.1"
+version = "0.3.2"
 edition = "2021"
-rust-version = "1.81"
+rust-version = "1.85"
 authors = ["uiuifree"]
 license = "MIT OR Apache-2.0"
 description = "日本標準地域メッシュコード（JIS X 0410）を扱う包括的なRustライブラリ / A comprehensive Rust library for Japanese Standard Grid Square Code"

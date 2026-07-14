@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-07-14
+
+### Fixed
+- docs.rsのビルド失敗を修正: 削除された`doc_auto_cfg`フィーチャーを統合先の`doc_cfg`に置き換え（Rust 1.92で`doc_cfg`に統合、[rust-lang/rust#138907](https://github.com/rust-lang/rust/pull/138907)）
+
+### Changed
+- MSRVを1.81から1.85に引き上げ（dev-dependenciesの推移的依存がedition2024を要求するため。Cargo 1.84以降のMSRV対応リゾルバにより`rust-version`互換の依存バージョンが選択される）
+
 ## [0.3.0] - 2026-07-14
 
 ### Fixed（破壊的変更）

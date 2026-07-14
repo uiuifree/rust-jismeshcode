@@ -19,12 +19,22 @@ jobs:
           - stable
           - beta
           - nightly
-          - 1.81.0  # MSRV
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.rust }}
+      - name: Run tests
+        run: cargo test --all-features
+
+  msrv:
+    name: MSRV (1.85.0)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.85.0
       - name: Run tests
         run: cargo test --all-features
 
@@ -62,15 +72,15 @@ jobs:
         run: cargo build --no-default-features --features libm,serde --target thumbv7em-none-eabihf
 
   doc:
-    name: Documentation
+    name: Documentation (docs.rs simulation)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@nightly
       - name: Check documentation
         run: cargo doc --all-features --no-deps
         env:
-          RUSTDOCFLAGS: -D warnings
+          RUSTDOCFLAGS: --cfg docsrs -D warnings
 
   coverage:
     name: Code coverage

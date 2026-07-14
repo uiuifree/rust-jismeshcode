@@ -68,7 +68,7 @@ fn main() {
     println!("   → 2次メッシュの子供: {} 個", second_children.len());
     println!(
         "      最初の3個: {:?}",
-        &second_children[0..3.min(second_children.len())]
+        second_children[0..3.min(second_children.len())]
             .iter()
             .map(|m| m.to_string())
             .collect::<Vec<_>>()
@@ -82,7 +82,7 @@ fn main() {
     println!("   → 3次メッシュの子供: {} 個", third_children.len());
     println!(
         "      最初の5個: {:?}",
-        &third_children[0..5.min(third_children.len())]
+        third_children[0..5.min(third_children.len())]
             .iter()
             .map(|m| m.to_string())
             .collect::<Vec<_>>()
