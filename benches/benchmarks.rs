@@ -1,6 +1,6 @@
 use criterion::{criterion_group, criterion_main, Criterion};
-use std::hint::black_box;
 use jismeshcode::prelude::*;
+use std::hint::black_box;
 
 fn bench_coord_to_mesh(c: &mut Criterion) {
     c.bench_function("coord_to_mesh_third", |b| {
