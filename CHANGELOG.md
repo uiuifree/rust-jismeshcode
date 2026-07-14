@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-07-14
+
+### Changed
+- dev-dependencyのcriterionを0.5から0.7に更新（非推奨の`criterion::black_box`を`std::hint::black_box`に置き換え）
+
 ## [0.3.1] - 2026-07-14
 
 ### Fixed
